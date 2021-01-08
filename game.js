@@ -2,7 +2,17 @@ const canvas = document.querySelector('#pong');
 
 const context = canvas.getContext('2d');
 
-context.fillStyle="black"
+context.fillStyle="black";
+
+canvas.addEventListener('mousemove', movePaddle);
+
+
+function movePaddle(e){
+
+    let rect = canvas.getBoundingClientRect();
+
+    user.y = e.clientY - rect.top - user.height/2
+}
 
 
 function drawRect(x,y,w,h,color){
@@ -30,8 +40,12 @@ function drawText(text,x,y,color){
     context.fillText(text,x,y)
 }
 
-
-let rectX = 0;
+function resetBall(){
+    ball.x = canvas.width/2;
+    ball.y = canvas.height/2;
+    ball.speed = 5;
+    ball.velocityX = -ball.velocityY
+}
 
 
 const user = {
@@ -79,7 +93,7 @@ function render(){
 
     drawRect(user.x,user.y,user.width,user.height,user.color);
 
-    drawRect(computer.x,user.y,computer.width,computer.height,computer.color);
+    drawRect(computer.x,computer.y,computer.width,computer.height,computer.color);
     
     drawBall(ball.x, ball.y, ball.r, ball.color);
     
@@ -95,22 +109,47 @@ function update(){
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
 
+
+    //computer ai
+    let computerLevel  = 0.1
+    computer.y += (ball.y - (computer.y + computer.height /2)) * computerLevel
+
+
     let edgeOfBallBottom = ball.y + ball.r;
 
     let edgeOfBallTop = ball.y - ball.r;
 
-    if(edgeOfBallBottom >canvas || edgeOfBallTop < 0){
+    if(edgeOfBallBottom >canvas.height || edgeOfBallTop < 0){
         ball.velocityY = -ball.velocityY
     }
 
     let player = (ball.x < canvas.width/2) ? user : computer;
 
-    if(collisionDetection(ball,player)){
-        let collidePoint = ball.y - (user.y + user.height/2)/(user.height/2);
+    if(collisionDetection(player,ball)){
+        let collidePoint = ball.y - (player.y + player.height/2);
+        collidePoint = collidePoint/(player.height/2)
 
-        let angleRad = collidePoint * Math.PI/4
+        let angleRad = collidePoint * Math.PI/4;
+
+        let direction = (ball.x < canvas.width/2) ? 1 : -1
+
+       
+
+        ball.velocityX = direction * ball.speed * Math.cos(angleRad);
+
+        ball.velocityY =             ball.speed * Math.sin(angleRad)
+
+        ball.speed += 0.1
 
     }
+
+     if(ball.x - ball.r < 0){
+        computer.score++;
+        resetBall();
+    }else if(ball.x + ball.r > canvas.width) {
+        user.score++;
+        resetBall()
+    } 
 }
 
 function collisionDetection(player,theBall){
@@ -124,8 +163,7 @@ function collisionDetection(player,theBall){
     theBall.left = theBall.x - theBall.r;
     theBall.right = theBall.x + theBall.r;
 
-    return theBall.right > player.left && theBall.top < player.bottom && theBall.left<player.right && theBall.bottom>player.bottom
-
+           return theBall.right > player.left && theBall.bottom > player.top && theBall.left < player.right && theBall.top < player.bottom
 }
 
 function game(){
@@ -135,4 +173,5 @@ function game(){
 
 const framesPerSecond = 50;
 
-//setInterval(game, 1000/framesPerSecond);
+setInterval(game, 1000/framesPerSecond);
+
