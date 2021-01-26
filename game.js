@@ -42,16 +42,16 @@ function drawNet(){
     }
 }
 
-function drawText(text,x,y,color){
+function drawText(text,x,y,color,font){
     context.fillStyle = color;
-    context.font = "75px fantasy";
+    context.font = font;
     context.fillText(text,x,y)
 }
 
 function resetBall(){
     ball.x = canvas.width/2;
     ball.y = canvas.height/2;
-    ball.speed = 5;
+    ball.speed = 7;
     ball.velocityX = -ball.velocityX
 }
 
@@ -89,7 +89,7 @@ const ball = {
     y: canvas.height/2,
     r:15,
     color: 'black',
-    speed: 5,
+    speed: 7,
     velocityX: 5,
     velocityY: 5,
 }
@@ -106,17 +106,18 @@ function render(){
     
     drawNet()
     
-    drawText(user.score, canvas.width/4, canvas.height/5, 'black')
+    drawText(user.score, canvas.width/4, canvas.height/5, 'black',"75px fantasy")
     
     drawText(computer.score, 3 * canvas.width/4, canvas.height/5, 'black')
 
 }
 
 function display(){
-    if(screen.width>500){
+    if(screen.width>1000){
         render()
     }else{
-        alert('Please use a desktop/laptop for a better experience')
+        drawRect(0,0,canvas.width,canvas.height, 'yellow');
+        drawText('Use a laptop/desktop to enjoy the gaming experience', canvas.width/3, canvas.height/2, 'black',"15px fantasy")
     }
 }
 
