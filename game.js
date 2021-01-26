@@ -4,6 +4,14 @@ const context = canvas.getContext('2d');
 
 context.fillStyle="black";
 
+/* context.beginPath();
+context.moveTo(100,200);
+context.arcTo(0,200,0,0,20);
+context.arcTo(0,0,100,0,20);
+context.arcTo(100,0,100,200,20);
+context.arcTo(100,200,0,200,20);
+context.fill(); */
+
 canvas.addEventListener('mousemove', movePaddle);
 
 
@@ -44,14 +52,14 @@ function resetBall(){
     ball.x = canvas.width/2;
     ball.y = canvas.height/2;
     ball.speed = 5;
-    ball.velocityX = -ball.velocityY
+    ball.velocityX = -ball.velocityX
 }
 
 
 const user = {
     x: 0,
     y: canvas.height/2 - 50,
-    width: 10,
+    width: 20,
     height:100,
     color: 'black',
     score: 0
@@ -59,9 +67,9 @@ const user = {
 
 
 const computer = {
-    x: canvas.width - 10,
+    x: canvas.width - 20,
     y: canvas.height/2 - 50,
-    width: 10,
+    width: 20,
     height:100,
     color: 'black',
     score: 0
@@ -79,16 +87,15 @@ const net = {
 const ball = {
     x: canvas.width/2,
     y: canvas.height/2,
-    r:20,
+    r:15,
     color: 'black',
     speed: 5,
     velocityX: 5,
     velocityY: 5,
 }
 
-
 function render(){
-
+    
     drawRect(0,0,canvas.width,canvas.height, 'yellow');
 
     drawRect(user.x,user.y,user.width,user.height,user.color);
@@ -104,6 +111,16 @@ function render(){
     drawText(computer.score, 3 * canvas.width/4, canvas.height/5, 'black')
 
 }
+
+function display(){
+    if(screen.width>500){
+        render()
+    }else{
+        alert('Please use a desktop/laptop for a better experience')
+    }
+}
+
+
 
 function update(){
     ball.x += ball.velocityX;
@@ -168,10 +185,10 @@ function collisionDetection(player,theBall){
 
 function game(){
     update();
-    render();
+    display();
 }
 
 const framesPerSecond = 50;
 
 setInterval(game, 1000/framesPerSecond);
-
+ 
